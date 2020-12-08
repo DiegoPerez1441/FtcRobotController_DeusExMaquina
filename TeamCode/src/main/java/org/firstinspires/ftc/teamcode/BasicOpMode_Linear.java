@@ -64,6 +64,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        //========================================
+        // HARDWARE MAPPING
+        //========================================
+
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -81,6 +85,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
+            //========================================
+            // POV DRIVING MODE
+            //========================================
 
             // Setup a variable for each drive wheel to save power level for telemetry
             double leftPower;
@@ -104,6 +112,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
             // Send calculated power to wheels
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
+
+            //========================================
+            // GAMEPAD1
+            //========================================
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
