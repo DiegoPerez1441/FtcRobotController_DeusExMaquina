@@ -29,10 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
 //@Disabled
-public class BasicOpMode_Linear extends LinearOpMode {
+public class BasicTeleOp_Linear extends LinearOpMode {
 
     //========================================
     // DECLARE OPMODE MEMBERS
@@ -64,6 +64,26 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor rightDrive = null;
 
     // Servos
+    Servo clawServo;
+    double clawServoPosition = 0.0;
+
+    // Constants
+    private static final double CLAW_SPEED = 0.2;
+
+    //========================================
+    // Methods
+    //========================================
+
+    // Constrain a value of type double between a min and a max value
+    private static double limitDouble(double value, double min, double max) {
+        if (value >= max) {
+            return max;
+        } else if (value <= min) {
+            return min;
+        } else {
+            return value;
+        }
+    }
 
     @Override
     public void runOpMode() {
@@ -77,6 +97,11 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
+
+        /*
+        * Motors
+        * */
+
         leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
 
@@ -84,6 +109,16 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        /*
+        * Servos
+        * */
+
+        // We hardware mapped the servo object to the actual servo
+        clawServo = hardwareMap.servo.get("clawServo");
+        // Reset the servo's position to 0 degrees
+        clawServo.setPosition(0.0);
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -122,6 +157,21 @@ public class BasicOpMode_Linear extends LinearOpMode {
             //========================================
             // GAMEPAD1
             //========================================
+
+            /*
+            * Claw
+            * */
+
+            // If the right trigger is pressed increase the clawServoPosition at a constant rate
+            if (gamepad1.right_trigger > 0) {
+                clawServoPosition = limitDouble(clawServoPosition + CLAW_SPEED, 0.0, 1.0);
+            } else {
+                clawServoPosition = limitDouble(clawServoPosition - CLAW_SPEED, 0.0, 1.0);
+            }
+
+            // Update the claw servo position
+            clawServo.setPosition(clawServoPosition);
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
