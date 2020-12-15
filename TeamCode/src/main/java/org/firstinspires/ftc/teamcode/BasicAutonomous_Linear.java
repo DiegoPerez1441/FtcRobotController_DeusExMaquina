@@ -166,8 +166,8 @@ public class BasicAutonomous_Linear extends LinearOpMode {
         }
 
         // Stop all motors at the end of the autonomous period
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
+        leftDrive.setPower(0.0);
+        rightDrive.setPower(0.0);
 
     }
 }
