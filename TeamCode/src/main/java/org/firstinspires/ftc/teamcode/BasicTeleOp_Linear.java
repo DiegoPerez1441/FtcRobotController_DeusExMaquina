@@ -159,18 +159,26 @@ public class BasicTeleOp_Linear extends LinearOpMode {
             //========================================
 
             /*
-            * Claw
+            * Old Claw Code
             * */
 
+            // Ignore this code, its no longer relevant
+
             // If the right trigger is pressed increase the clawServoPosition at a constant rate
-            if (gamepad1.right_trigger > 0) {
+            /*if (gamepad1.right_trigger > 0) {
                 clawServoPosition = limitDouble(clawServoPosition + CLAW_SPEED, 0.0, 1.0);
             } else {
                 clawServoPosition = limitDouble(clawServoPosition - CLAW_SPEED, 0.0, 1.0);
-            }
+            }*/
 
             // Update the claw servo position
-            clawServo.setPosition(clawServoPosition);
+            //clawServo.setPosition(clawServoPosition);
+
+            /*
+            * Claw
+            * */
+
+            // Claw code goes here
 
 
             // Show the elapsed game time and wheel power.
