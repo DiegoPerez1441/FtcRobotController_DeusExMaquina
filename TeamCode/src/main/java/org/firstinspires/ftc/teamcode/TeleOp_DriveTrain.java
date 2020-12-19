@@ -59,8 +59,10 @@ public class TeleOp_DriveTrain extends LinearOpMode {
     // DECLARE OPMODE MEMBERS
     //========================================
 
-    // Motors
+    // Misc
     private ElapsedTime runtime = new ElapsedTime();
+
+    // Motors
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
 
