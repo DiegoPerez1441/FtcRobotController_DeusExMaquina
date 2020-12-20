@@ -108,15 +108,33 @@ public class TeleOp_MecanumDriveTrain extends LinearOpMode {
             // MECANUM DRIVETRAIN
             //========================================
 
-            double y = -gamepad1.left_stick_y;      // This is reversed
-            double x = gamepad1.left_stick_x * STRAFING_SENSIBILITY; // Counteract strafing imperfections
-            double rx = gamepad1.right_stick_x;     // Strafing
+            double y = -gamepad1.left_stick_y;                          // This is reversed
+            double x = gamepad1.left_stick_x * STRAFING_SENSIBILITY;    // Counteract strafing imperfections
+            double rx = gamepad1.right_stick_x;                         // Strafing
 
             double frontLeftPower = y + x + rx;
             double backLeftPower = y - x + rx;
             double frontRightPower = y - x - rx;
             double backRightPower = y + x - rx;
 
+            // Scale values in between -1.0 and 1.0 to prevent the clipping of values in order to maintain the driving ratio
+            if (Math.abs(frontLeftPower) > 1 || Math.abs(backLeftPower) > 1 ||
+                Math.abs(frontRightPower) > 1 || Math.abs(backRightPower) > 1 ) {
+
+                // Find the largest value
+                double max = 0;
+                max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
+                max = Math.max(Math.abs(frontRightPower), max);
+                max = Math.max(Math.abs(backRightPower), max);
+
+                // Divide everything by max (it's positive so we don't need to worry about signs)
+                frontLeftPower /= max;
+                backLeftPower /= max;
+                frontRightPower /= max;
+                backRightPower /= max;
+            }
+
+            // Update Drivetrain
             frontLeftMotor.setPower(frontLeftPower);
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
