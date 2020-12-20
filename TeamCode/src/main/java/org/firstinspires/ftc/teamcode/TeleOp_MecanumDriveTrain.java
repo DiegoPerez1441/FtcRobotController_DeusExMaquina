@@ -143,7 +143,7 @@ public class TeleOp_MecanumDriveTrain extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "front left (%.2f), back left (%.2f)", "front right (%.2f), back right (%.2f)", frontLeftPower, backLeftPower, frontRightPower, backRightPower);
+            telemetry.addData("Motors", "front left (%.2f), back left (%.2f), front right (%.2f), back right (%.2f)", frontLeftPower, backLeftPower, frontRightPower, backRightPower);
             telemetry.update();
         }
     }
