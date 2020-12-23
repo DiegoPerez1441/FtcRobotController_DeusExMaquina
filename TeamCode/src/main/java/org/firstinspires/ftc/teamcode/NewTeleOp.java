@@ -132,10 +132,10 @@ public class NewTeleOp extends LinearOpMode {
             }
 
             // Update mecanumDrivetrain
-            mecanumDrivetrain.frontLeftMotor.setPower(frontLeftPower);
-            mecanumDrivetrain.backLeftMotor.setPower(backLeftPower);
-            mecanumDrivetrain.frontRightMotor.setPower(frontRightPower);
-            mecanumDrivetrain.backRightMotor.setPower(backRightPower);
+            mecanumDrivetrain.getFrontLeftMotor().setPower(frontLeftPower);
+            mecanumDrivetrain.getBackLeftMotor().setPower(backLeftPower);
+            mecanumDrivetrain.getFrontRightMotor().setPower(frontRightPower);
+            mecanumDrivetrain.getBackRightMotor().setPower(backRightPower);
 
             // Show the elapsed game time and mecanumDrivetrain power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

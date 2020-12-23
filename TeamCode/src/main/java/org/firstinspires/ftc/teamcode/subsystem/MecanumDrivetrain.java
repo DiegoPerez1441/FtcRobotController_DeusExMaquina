@@ -1,24 +1,38 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Hardware;
 
 public class MecanumDrivetrain {
-
-    // Motors
-    public DcMotor frontLeftMotor = null;
-    public DcMotor backLeftMotor = null;
-    public DcMotor frontRightMotor = null;
-    public DcMotor backRightMotor = null;
 
     // Constants
     public static final double STRAFING_SENSIBILITY = 1.5;
 
+    // Motors
+    private DcMotor frontLeftMotor = null;
+    private DcMotor backLeftMotor = null;
+    private DcMotor frontRightMotor = null;
+    private DcMotor backRightMotor = null;
+
     // Constructor
     public MecanumDrivetrain() {
 
+    }
+
+    public DcMotor getFrontLeftMotor() {
+        return frontLeftMotor;
+    }
+
+    public DcMotor getBackLeftMotor() {
+        return backLeftMotor;
+    }
+
+    public DcMotor getFrontRightMotor() {
+        return frontRightMotor;
+    }
+
+    public DcMotor getBackRightMotor() {
+        return backRightMotor;
     }
 
     public void init(HardwareMap hwMap) {
