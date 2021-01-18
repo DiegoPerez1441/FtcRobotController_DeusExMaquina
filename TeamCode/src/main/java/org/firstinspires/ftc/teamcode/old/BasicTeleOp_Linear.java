@@ -27,12 +27,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.old;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -51,9 +50,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp DriveTrain", group="Linear Opmode")
+@TeleOp(name="Basic TeleOp OpMode", group="Linear Opmode")
 //@Disabled
-public class TeleOp_DriveTrain extends LinearOpMode {
+public class BasicTeleOp_Linear extends LinearOpMode {
 
     //========================================
     // DECLARE OPMODE MEMBERS
@@ -65,6 +64,28 @@ public class TeleOp_DriveTrain extends LinearOpMode {
     // Motors
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
+
+    // Servos
+    Servo clawServo;
+    double clawServoPosition = 0.0;
+
+    // Constants
+    private static final double CLAW_SPEED = 0.2;
+
+    //========================================
+    // Methods
+    //========================================
+
+    // Constrain a value of type double between a min and a max value
+    private static double limitDouble(double value, double min, double max) {
+        if (value >= max) {
+            return max;
+        } else if (value <= min) {
+            return min;
+        } else {
+            return value;
+        }
+    }
 
     @Override
     public void runOpMode() {
@@ -90,6 +111,15 @@ public class TeleOp_DriveTrain extends LinearOpMode {
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        /*
+        * Servos
+        * */
+
+        // We hardware mapped the servo object to the actual servo
+        clawServo = hardwareMap.servo.get("clawServo");
+        // Reset the servo's position to 0 degrees
+        clawServo.setPosition(0.0);
 
 
         // Wait for the game to start (driver presses PLAY)
@@ -125,6 +155,32 @@ public class TeleOp_DriveTrain extends LinearOpMode {
             // Send calculated power to wheels
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
+
+            //========================================
+            // GAMEPAD1
+            //========================================
+
+            /*
+            * Old Claw Code
+            * */
+
+            // Ignore this code, its no longer relevant
+
+            // If the right trigger is pressed increase the clawServoPosition at a constant rate
+            /*if (gamepad1.right_trigger > 0) {
+                clawServoPosition = limitDouble(clawServoPosition + CLAW_SPEED, 0.0, 1.0);
+            } else {
+                clawServoPosition = limitDouble(clawServoPosition - CLAW_SPEED, 0.0, 1.0);
+            }*/
+
+            // Update the claw servo position
+            //clawServo.setPosition(clawServoPosition);
+
+            /*
+            * Claw
+            * */
+
+            // Claw code goes here
 
 
             // Show the elapsed game time and wheel power.
