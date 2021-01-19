@@ -62,8 +62,10 @@ public class BasicAutonomous_MecanumDrivetrain extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     // Motors
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
+    private DcMotor frontLeftMotor = null;
+    private DcMotor backLeftMotor = null;
+    private DcMotor frontRightMotor = null;
+    private DcMotor backRightMotor = null;
 
     // Servos
     //Servo clawServo;
@@ -110,13 +112,15 @@ public class BasicAutonomous_MecanumDrivetrain extends LinearOpMode {
         * Motors
         * */
 
-        leftDrive  = hardwareMap.get(DcMotor.class, "leftDrive");
-        rightDrive = hardwareMap.get(DcMotor.class, "rightDrive");
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
+        backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
+        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
+        backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        //leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        //rightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         /*
         * Servos
@@ -152,8 +156,10 @@ public class BasicAutonomous_MecanumDrivetrain extends LinearOpMode {
         }
 
         // Start moving the robot forward at a constant pace and then begin looking for the white line
-        leftDrive.setPower(APPROACH_SPEED);
-        rightDrive.setPower(APPROACH_SPEED);
+        frontLeftMotor.setPower(APPROACH_SPEED);
+        backLeftMotor.setPower(APPROACH_SPEED);
+        frontRightMotor.setPower(APPROACH_SPEED);
+        backRightMotor.setPower(APPROACH_SPEED);
 
 
         // run until the end of the match (driver presses STOP)
@@ -166,8 +172,10 @@ public class BasicAutonomous_MecanumDrivetrain extends LinearOpMode {
         }
 
         // Stop all motors at the end of the autonomous period
-        leftDrive.setPower(0.0);
-        rightDrive.setPower(0.0);
+        frontLeftMotor.setPower(0.0);
+        backLeftMotor.setPower(0.0);
+        frontRightMotor.setPower(0.0);
+        backRightMotor.setPower(0.0);
 
     }
 }
