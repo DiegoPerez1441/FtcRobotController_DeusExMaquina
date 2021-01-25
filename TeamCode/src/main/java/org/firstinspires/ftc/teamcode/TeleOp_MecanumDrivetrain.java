@@ -93,8 +93,10 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        //frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        //backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
 
         // Wait for the game to start (driver presses PLAY)
