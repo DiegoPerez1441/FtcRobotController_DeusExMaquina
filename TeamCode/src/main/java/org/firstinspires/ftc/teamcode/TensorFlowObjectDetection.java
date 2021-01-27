@@ -55,9 +55,12 @@ import java.util.List;
 @TeleOp(name = "TensorFlow Object Detection", group = "Concept")
 @Disabled
 public class TensorFlowObjectDetection extends LinearOpMode {
+
+    // TensorFlow Object Detection
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
+
     private String stackSize = "None"; // Default
     private WobbleTargetZone targetZone = WobbleTargetZone.BLUE_A; // Default
 
@@ -113,7 +116,10 @@ public class TensorFlowObjectDetection extends LinearOpMode {
             //tfod.setZoom(2.5, 1.78);
         }
 
-        /** Wait for the game to begin */
+        //========================================
+        // Wait for the game to begin
+        //========================================
+
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
@@ -149,6 +155,22 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                       telemetry.update();
                     }
                 }
+
+                // Navigate to the correct Target Zone
+                switch (targetZone) {
+                    case BLUE_A:
+                        telemetry.addData("Navigating to", targetZone);
+                        break;
+
+                    case BLUE_B:
+                        telemetry.addData("Navigating to", targetZone);
+                        break;
+
+                    case BLUE_C:
+                        telemetry.addData("Navigating to", targetZone);
+                        break;
+                }
+
             }
         }
 
