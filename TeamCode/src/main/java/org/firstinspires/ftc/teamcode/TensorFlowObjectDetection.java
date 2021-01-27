@@ -39,6 +39,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Came
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.enums.WobbleTargetZone;
+import org.firstinspires.ftc.teamcode.subsystem.MecanumDrivetrain;
 
 import java.util.List;
 
@@ -55,6 +56,9 @@ import java.util.List;
 @TeleOp(name = "TensorFlow Object Detection", group = "Concept")
 @Disabled
 public class TensorFlowObjectDetection extends LinearOpMode {
+
+    // Declare OpMode Members
+    private MecanumDrivetrain mecanumDrivetrain = new MecanumDrivetrain();
 
     // TensorFlow Object Detection
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
@@ -93,6 +97,13 @@ public class TensorFlowObjectDetection extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+        //========================================
+        // HARDWARE MAPPING
+        //========================================
+
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -115,6 +126,9 @@ public class TensorFlowObjectDetection extends LinearOpMode {
             // Uncomment the following line if you want to adjust the magnification and/or the aspect ratio of the input images.
             //tfod.setZoom(2.5, 1.78);
         }
+
+        // Initialize the mecanum drivetrain and hardwaremap its hardware variables
+        mecanumDrivetrain.init(hardwareMap);
 
         //========================================
         // Wait for the game to begin
