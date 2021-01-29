@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -62,11 +63,10 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     // Motors
-    //private DcMotor leftfront = null;
-    //private DcMotor leftback = null;
-    //private DcMotor rightfront = null;
-    //private DcMotor rightback = null;
-
+    private DcMotor frontLeftMotor = null;
+    private DcMotor backLeftMotor = null;
+    private DcMotor frontRightMotor = null;
+    private DcMotor backRightMotor = null;
     // Servos
 
     @Override
@@ -81,17 +81,17 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        //frontLeftMotor = hwMap.get(DcMotor.class, "frontLeftMotor");
-        //backLeftMotor = hwMap.get(DcMotor.class, "backLeftMotor");
-        //frontRightMotor = hwMap.get(DcMotor.class, "frontRightMotor");
-        //backRightMotor = hwMap.get(DcMotor.class, "backRightMotor");
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
+        backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
+        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
+        backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        //leftfront.setDirection(DcMotor.Direction.FORWARD);
-        //leftback.setDirection(DcMotor.Direction.FORWARD);
-        //rightfront.setDirection(DcMotor.Direction.REVERSE);
-        //rightback.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -103,8 +103,17 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
             //========================================
             // Autonomous Mode
             //========================================
-
+            frontLeftMotor.setPower(1.0);
+            backLeftMotor.setPower(1.0);
+            frontRightMotor.setPower(1.0);
+            backRightMotor.setPower(1.0);
+            sleep(1000);
             // Park on the line through timing
+
+            frontLeftMotor.setPower(0.0);
+            backLeftMotor.setPower(0.0);
+            frontRightMotor.setPower(0.0);
+            backRightMotor.setPower(0.0);
 
 
             // Show the elapsed game time and wheel power.
