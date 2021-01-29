@@ -67,7 +67,13 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
     private DcMotor backLeftMotor = null;
     private DcMotor frontRightMotor = null;
     private DcMotor backRightMotor = null;
+
     // Servos
+
+    // Constants
+    private static final double APPROACH_SPEED = 1.0;
+    private static final int DRIVE_TO_LINE_TIME = 1000;
+
 
     @Override
     public void runOpMode() {
@@ -103,12 +109,13 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
             //========================================
             // Autonomous Mode
             //========================================
-            frontLeftMotor.setPower(1.0);
-            backLeftMotor.setPower(1.0);
-            frontRightMotor.setPower(1.0);
-            backRightMotor.setPower(1.0);
-            sleep(1000);
+
             // Park on the line through timing
+            frontLeftMotor.setPower(APPROACH_SPEED);
+            backLeftMotor.setPower(APPROACH_SPEED);
+            frontRightMotor.setPower(APPROACH_SPEED);
+            backRightMotor.setPower(APPROACH_SPEED);
+            sleep(DRIVE_TO_LINE_TIME);
 
             frontLeftMotor.setPower(0.0);
             backLeftMotor.setPower(0.0);
@@ -121,5 +128,12 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
             //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
         }
+
+        // Stop all motors at the end of the autonomous period
+        frontLeftMotor.setPower(0.0);
+        backLeftMotor.setPower(0.0);
+        frontRightMotor.setPower(0.0);
+        backRightMotor.setPower(0.0);
+
     }
 }
