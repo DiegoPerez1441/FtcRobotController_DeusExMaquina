@@ -69,7 +69,7 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
 
     // Constants
     private static final double APPROACH_SPEED = 0.5;
-    private static final int DRIVE_TO_LINE_TIME = 1;
+    private static final long DRIVE_TO_LINE_TIME = 500;
 
 
     @Override
