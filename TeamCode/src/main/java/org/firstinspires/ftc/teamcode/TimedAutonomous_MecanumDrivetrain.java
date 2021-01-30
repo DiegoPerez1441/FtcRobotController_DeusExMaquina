@@ -30,11 +30,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -116,11 +113,6 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
             frontRightMotor.setPower(APPROACH_SPEED);
             backRightMotor.setPower(APPROACH_SPEED);
             sleep(DRIVE_TO_LINE_TIME);
-
-            frontLeftMotor.setPower(0.0);
-            backLeftMotor.setPower(0.0);
-            frontRightMotor.setPower(0.0);
-            backRightMotor.setPower(0.0);
 
 
             // Show the elapsed game time and wheel power.
