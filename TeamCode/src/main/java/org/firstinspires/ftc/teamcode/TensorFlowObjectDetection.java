@@ -85,9 +85,9 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     //========================================
     // CONSTANTS
     //========================================
-    static final double COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double COUNTS_PER_MOTOR_REV    = 1440;     // eg: TETRIX Motor Encoder
+    static final double DRIVE_GEAR_REDUCTION    = 2.0;      // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES   = 4.0;      // For figuring circumference
     static final double COUNTS_PER_INCH         =   (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                     (WHEEL_DIAMETER_INCHES * 3.1415);
 
@@ -96,8 +96,8 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     static final double DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
     static final double TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
 
-    static final double HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
-    static final double P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
+    static final double HEADING_THRESHOLD       = 1;        // As tight as we can make it with an integer gyro
+    static final double P_TURN_COEFF            = 0.1;      // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
 
     // TensorFlow Object Detection
@@ -105,8 +105,9 @@ public class TensorFlowObjectDetection extends LinearOpMode {
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
 
-    private String stackSize = "None"; // Default
-    private WobbleTargetZone targetZone = WobbleTargetZone.BLUE_A; // Default
+    private String stackSize = "None";                              // Default
+    private WobbleTargetZone targetZone = WobbleTargetZone.RED_A;   // Default
+    private static final double GRID_SIZE = 22.75;                  // Each tile is 22.75 inches
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -234,9 +235,9 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                             // Set the targetZone corresponding to the initial ring stack size
                             stackSize = recognition.getLabel();
                             if (stackSize.equals(LABEL_FIRST_ELEMENT)) {
-                                targetZone = WobbleTargetZone.BLUE_C;
+                                targetZone = WobbleTargetZone.RED_C;
                             } else if (stackSize.equals(LABEL_SECOND_ELEMENT)) {
-                                targetZone = WobbleTargetZone.BLUE_B;
+                                targetZone = WobbleTargetZone.RED_B;
                             }
                             telemetry.addData("Target Zone", targetZone);
 
@@ -246,17 +247,44 @@ public class TensorFlowObjectDetection extends LinearOpMode {
                 }
 
                 // Navigate to the correct Target Zone
+                /*
+                 * Each tile is approximately 22.75 by 22.75 inches
+                 * The blue alliance team is one the left and the red alliance team is on the right
+                 * https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/field-setup-guide.pdf
+                 * */
                 switch (targetZone) {
-                    case BLUE_A:
+                    case RED_A:
+                        /*
+                         * No rings
+                         * 3 forward and 1 to the right
+                         * */
                         telemetry.addData("Navigating to", targetZone);
+
+                        gyroDrive(DRIVE_SPEED, GRID_SIZE * 3, 0);
+                        gyroTurn(TURN_SPEED, -90);
+
                         break;
 
-                    case BLUE_B:
+                    case RED_B:
+                        /*
+                         * One ring
+                         * 4 forward and 1 to the left
+                         * */
                         telemetry.addData("Navigating to", targetZone);
+
+                        gyroDrive(DRIVE_SPEED, GRID_SIZE * 4, 0);
+                        gyroTurn(TURN_SPEED, 90);
                         break;
 
-                    case BLUE_C:
+                    case RED_C:
+                        /*
+                         * Four rings
+                         * 5 forward and 1 to the right
+                         * */
                         telemetry.addData("Navigating to", targetZone);
+
+                        gyroDrive(DRIVE_SPEED, GRID_SIZE * 5, 0);
+                        gyroTurn(TURN_SPEED, -90);
                         break;
                 }
 
