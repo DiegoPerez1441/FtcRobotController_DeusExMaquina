@@ -108,11 +108,11 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
             //========================================
 
             // Park on the line through timing
-            frontLeftMotor.setPower(APPROACH_SPEED);
-            backLeftMotor.setPower(APPROACH_SPEED);
-            frontRightMotor.setPower(APPROACH_SPEED);
-            backRightMotor.setPower(APPROACH_SPEED);
-            sleep(DRIVE_TO_LINE_TIME);
+            frontLeftMotor.setPower(1.0);
+            backLeftMotor.setPower(1.0);
+            frontRightMotor.setPower(1.0);
+            backRightMotor.setPower(1.0);
+            sleep(2000);
 
 
             // Show the elapsed game time and wheel power.
