@@ -116,10 +116,10 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
                 backRightMotor.setPower(APPROACH_SPEED);
                 sleep(DRIVE_TO_LINE_TIME);
 
-                frontLeftMotor.setPower(APPROACH_SPEED);
-                backLeftMotor.setPower(APPROACH_SPEED);
-                frontRightMotor.setPower(APPROACH_SPEED);
-                backRightMotor.setPower(APPROACH_SPEED);
+                frontLeftMotor.setPower(0.0);
+                backLeftMotor.setPower(0.0);
+                frontRightMotor.setPower(0.0);
+                backRightMotor.setPower(0.0);
                 autonomousRunning = false;
             }
 
