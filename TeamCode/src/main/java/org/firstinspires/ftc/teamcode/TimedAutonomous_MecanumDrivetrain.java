@@ -102,7 +102,7 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive() && runtime.seconds() < 2.0) {
+        while (opModeIsActive() && runtime.milliseconds() < DRIVE_TO_LINE_TIME) {
 
             //========================================
             // Autonomous Mode
