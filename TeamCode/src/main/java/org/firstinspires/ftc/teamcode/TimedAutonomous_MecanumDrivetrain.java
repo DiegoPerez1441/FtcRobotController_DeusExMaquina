@@ -58,6 +58,7 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
 
     // Misc
     private ElapsedTime runtime = new ElapsedTime();
+    private static boolean autonomousRunning = true;
 
     // Motors
     private DcMotor frontLeftMotor = null;
@@ -107,19 +108,20 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
             // Autonomous Mode
             //========================================
 
-            // Park on the line through timing
-            frontLeftMotor.setPower(DRIVE_TO_LINE_TIME);
-            backLeftMotor.setPower(DRIVE_TO_LINE_TIME);
-            frontRightMotor.setPower(DRIVE_TO_LINE_TIME);
-            backRightMotor.setPower(DRIVE_TO_LINE_TIME);
-            sleep(DRIVE_TO_LINE_TIME);
+            if (autonomousRunning) {
+                // Park on the line through timing
+                frontLeftMotor.setPower(APPROACH_SPEED);
+                backLeftMotor.setPower(APPROACH_SPEED);
+                frontRightMotor.setPower(APPROACH_SPEED);
+                backRightMotor.setPower(APPROACH_SPEED);
+                sleep(DRIVE_TO_LINE_TIME);
 
-            frontLeftMotor.setPower(DRIVE_TO_LINE_TIME);
-            backLeftMotor.setPower(DRIVE_TO_LINE_TIME);
-            frontRightMotor.setPower(DRIVE_TO_LINE_TIME);
-            backRightMotor.setPower(DRIVE_TO_LINE_TIME);
-            sleep(1000 * 28); // Sleep for the remainder of the autonomous period
-
+                frontLeftMotor.setPower(APPROACH_SPEED);
+                backLeftMotor.setPower(APPROACH_SPEED);
+                frontRightMotor.setPower(APPROACH_SPEED);
+                backRightMotor.setPower(APPROACH_SPEED);
+                autonomousRunning = false;
+            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
