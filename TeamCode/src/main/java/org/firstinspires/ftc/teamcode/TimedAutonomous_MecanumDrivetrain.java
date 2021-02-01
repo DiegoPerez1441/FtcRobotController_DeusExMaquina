@@ -102,26 +102,17 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+        while (opModeIsActive() && runtime.seconds() < 2.0) {
 
             //========================================
             // Autonomous Mode
             //========================================
 
-            if (autonomousRunning) {
-                // Park on the line through timing
-                frontLeftMotor.setPower(APPROACH_SPEED);
-                backLeftMotor.setPower(APPROACH_SPEED);
-                frontRightMotor.setPower(APPROACH_SPEED);
-                backRightMotor.setPower(APPROACH_SPEED);
-                sleep(DRIVE_TO_LINE_TIME);
-
-                frontLeftMotor.setPower(0.0);
-                backLeftMotor.setPower(0.0);
-                frontRightMotor.setPower(0.0);
-                backRightMotor.setPower(0.0);
-                autonomousRunning = false;
-            }
+            // Park on the line through timing
+            frontLeftMotor.setPower(APPROACH_SPEED);
+            backLeftMotor.setPower(APPROACH_SPEED);
+            frontRightMotor.setPower(APPROACH_SPEED);
+            backRightMotor.setPower(APPROACH_SPEED);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
