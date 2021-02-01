@@ -114,11 +114,12 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
             backRightMotor.setPower(DRIVE_TO_LINE_TIME);
             sleep(DRIVE_TO_LINE_TIME);
 
-            frontLeftMotor.setPower(0.0);
-            backLeftMotor.setPower(0.0);
-            frontRightMotor.setPower(0.0);
-            backRightMotor.setPower(0.0);
-            sleep(DRIVE_TO_LINE_TIME);
+            frontLeftMotor.setPower(DRIVE_TO_LINE_TIME);
+            backLeftMotor.setPower(DRIVE_TO_LINE_TIME);
+            frontRightMotor.setPower(DRIVE_TO_LINE_TIME);
+            backRightMotor.setPower(DRIVE_TO_LINE_TIME);
+            sleep(1000 * 28); // Sleep for the remainder of the autonomous period
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
