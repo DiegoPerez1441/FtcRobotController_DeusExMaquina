@@ -68,8 +68,8 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
     // Servos
 
     // Constants
-    private static final double APPROACH_SPEED = 0.5;
-    private static final long DRIVE_TO_LINE_TIME = 500;
+    private static final double APPROACH_SPEED = 1;
+    private static final long DRIVE_TO_LINE_TIME = 2000;
 
 
     @Override
@@ -108,12 +108,26 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
             //========================================
 
             // Park on the line through timing
-            frontLeftMotor.setPower(1.0);
-            backLeftMotor.setPower(1.0);
-            frontRightMotor.setPower(1.0);
-            backRightMotor.setPower(1.0);
-            sleep(2000);
+            frontLeftMotor.setPower(DRIVE_TO_LINE_TIME);
+            backLeftMotor.setPower(DRIVE_TO_LINE_TIME);
+            frontRightMotor.setPower(DRIVE_TO_LINE_TIME);
+            backRightMotor.setPower(DRIVE_TO_LINE_TIME);
 
+            /*
+             * Try to sleep and if it throws an error, print out the exception then stop all motors
+             * */
+            try {
+                sleep(DRIVE_TO_LINE_TIME);
+            } catch (Exception e) {
+                //e.printStackTrace();
+                telemetry.addData("Sleep Status", e);
+            } finally {
+                // Stop the motors regardless of the try catch regardless of the result
+                frontLeftMotor.setPower(0.0);
+                backLeftMotor.setPower(0.0);
+                frontRightMotor.setPower(0.0);
+                backRightMotor.setPower(0.0);
+            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
