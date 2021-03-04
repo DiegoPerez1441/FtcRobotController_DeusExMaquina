@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -52,6 +53,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //@Disabled
 public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
 
+    // State of the wobble goal claw servo
+    private enum ClawServoState {
+        OPEN,
+        CLOSED
+    }
+
     //========================================
     // DECLARE OPMODE MEMBERS
     //========================================
@@ -65,13 +72,18 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
     private DcMotor frontRightMotor = null;
     private DcMotor backRightMotor = null;
 
-    //Shooter Motors
+    // Shooter Motors
     private DcMotor shooterMotor1 = null;
     private DcMotor shooterMotor2 = null;
 
+    // Wobble Goal Claw Servo
+    private Servo clawServo = null;
+    // State of the wobble goal claw servo
+    private ClawServoState clawServo_state = ClawServoState.CLOSED;
 
     // Constants
     private static final double STRAFING_SENSIBILITY = 1.5;
+
 
     @Override
     public void runOpMode() {
@@ -105,8 +117,18 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
         /*
          * Shooter Motors
          * */
+
         shooterMotor1 = hardwareMap.get(DcMotor.class, "shooterMotor1");
         shooterMotor2 = hardwareMap.get(DcMotor.class, "shooterMotor2");
+
+        /*
+         * Wobble Goal Claw Servo
+         * */
+
+        // Hardware map the servo object to the actual servo
+        clawServo = hardwareMap.servo.get("clawServo");
+        // Reset the servo's position to 0 degrees
+        clawServo.setPosition(0.0);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -150,6 +172,20 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
+
+            //========================================
+            // Wobble Goal Claw
+            //========================================
+
+            // Toggle the wobble goal claw servo
+            if (gamepad2.right_bumper && (clawServo_state == ClawServoState.CLOSED)) {
+                clawServo.setPosition(1.0);
+                clawServo_state = ClawServoState.OPEN;
+            } else if (gamepad2.right_bumper && (clawServo_state == ClawServoState.OPEN)) {
+                clawServo.setPosition(0.0);
+                clawServo_state = ClawServoState.CLOSED;
+            }
+
 
             //========================================
             // SHOOTER
