@@ -210,6 +210,9 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
                 wobbleGoalArmMotor.setPower(0.5);
             } else if (gamepad2.dpad_down) {
                 wobbleGoalArmMotor.setPower(-0.5);
+            } else {
+                // Reset and stop the motor
+                wobbleGoalArmMotor.setPower(0);
             }
 
 
