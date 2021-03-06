@@ -54,7 +54,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
 
     // State of the wobble goal claw servo
-    private enum ClawServoState {
+    private enum ClampServoState {
         OPEN,
         CLOSED
     }
@@ -71,18 +71,20 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
     private DcMotor backLeftMotor = null;
     private DcMotor frontRightMotor = null;
     private DcMotor backRightMotor = null;
+    /* Drivetrain Constants */
+    private static final double STRAFING_SENSIBILITY = 1.5;
 
     // Shooter Motors
     private DcMotor shooterMotor1 = null;
     private DcMotor shooterMotor2 = null;
 
-    // Wobble Goal Claw Servo
-    private Servo clawServo = null;
-    // State of the wobble goal claw servo
-    private ClawServoState clawServo_state = ClawServoState.CLOSED;
+    // Wobble Goal Clamp Servo
+    private Servo clampServo = null;
 
-    // Constants
-    private static final double STRAFING_SENSIBILITY = 1.5;
+    // State of the wobble goal clamp servo
+    private ClampServoState clampServo_state = ClampServoState.CLOSED;
+    /* Wobble Goal Clamp Default Values and Constants */
+    private static final double CLAMPSERVO_OPENPOSITION = 0.7;
 
 
     @Override
@@ -126,9 +128,9 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
          * */
 
         // Hardware map the servo object to the actual servo
-        clawServo = hardwareMap.servo.get("clawServo");
+        clampServo = hardwareMap.servo.get("clawServo");
         // Reset the servo's position to 0 degrees
-        clawServo.setPosition(0.0);
+        clampServo.setPosition(0.0);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -177,13 +179,19 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
             // Wobble Goal Claw
             //========================================
 
-            // Toggle the wobble goal claw servo
-            if (gamepad2.right_bumper && (clawServo_state == ClawServoState.CLOSED)) {
-                clawServo.setPosition(1.0);
-                clawServo_state = ClawServoState.OPEN;
-            } else if (gamepad2.right_bumper && (clawServo_state == ClawServoState.OPEN)) {
-                clawServo.setPosition(0.0);
-                clawServo_state = ClawServoState.CLOSED;
+            if (gamepad2.right_trigger > 0) {
+                clampServo.setPosition(gamepad2.right_trigger);
+            } else {
+                // Toggle the wobble goal claw servo
+                if (gamepad2.right_bumper && (clampServo_state == ClampServoState.CLOSED)) {
+                    // Open
+                    clampServo.setPosition(CLAMPSERVO_OPENPOSITION);
+                    clampServo_state = ClampServoState.OPEN;
+                } else if (gamepad2.left_bumper && (clampServo_state == ClampServoState.OPEN)) {
+                    // Close
+                    clampServo.setPosition(0.0);
+                    clampServo_state = ClampServoState.CLOSED;
+                }
             }
 
 
