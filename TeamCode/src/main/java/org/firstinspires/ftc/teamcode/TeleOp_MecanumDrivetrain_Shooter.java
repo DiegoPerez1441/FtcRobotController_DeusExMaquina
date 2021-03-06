@@ -66,7 +66,7 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
     // Misc
     private ElapsedTime runtime = new ElapsedTime();
 
-    // Motors
+    // Drivetrain Motors
     private DcMotor frontLeftMotor = null;
     private DcMotor backLeftMotor = null;
     private DcMotor frontRightMotor = null;
@@ -85,6 +85,9 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
     private ClampServoState clampServo_state = ClampServoState.CLOSED;
     /* Wobble Goal Clamp Default Values and Constants */
     private static final double CLAMPSERVO_OPENPOSITION = 0.7;
+
+    // Wobble Goal Arm Motor
+    private DcMotor wobbleGoalArmMotor = null;
 
 
     @Override
@@ -124,13 +127,19 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
         shooterMotor2 = hardwareMap.get(DcMotor.class, "shooterMotor2");
 
         /*
-         * Wobble Goal Claw Servo
+         * Wobble Goal Clamp Servo
          * */
 
         // Hardware map the servo object to the actual servo
         clampServo = hardwareMap.servo.get("clawServo");
         // Reset the servo's position to 0 degrees
         clampServo.setPosition(0.0);
+
+        /*
+         * Wobble Goal Motor
+         * */
+
+        wobbleGoalArmMotor = hardwareMap.get(DcMotor.class, "wobbleGoalArmMotor");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -176,9 +185,10 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
             backRightMotor.setPower(backRightPower);
 
             //========================================
-            // Wobble Goal Claw
+            // Wobble Goal Arm
             //========================================
 
+            /* Clamp */
             if (gamepad2.right_trigger > 0) {
                 clampServo.setPosition(gamepad2.right_trigger);
             } else {
@@ -192,6 +202,14 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
                     clampServo.setPosition(0.0);
                     clampServo_state = ClampServoState.CLOSED;
                 }
+            }
+
+            /* Arm Motor */
+            // To-Do: Set the motor to a certain position instead of setting its power to a certain direction
+            if (gamepad2.dpad_up) {
+                wobbleGoalArmMotor.setPower(0.5);
+            } else if (gamepad2.dpad_down) {
+                wobbleGoalArmMotor.setPower(-0.5);
             }
 
 
