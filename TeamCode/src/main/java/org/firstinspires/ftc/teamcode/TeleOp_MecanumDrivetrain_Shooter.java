@@ -75,8 +75,8 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
     private static final double STRAFING_SENSIBILITY = 1.5;
 
     // Shooter Motors
-   // private DcMotor shooterMotor1 = null;
-   // private DcMotor shooterMotor2 = null;
+    //private DcMotor shooterMotor1 = null;
+    //private DcMotor shooterMotor2 = null;
 
     // Wobble Goal Clamp Servo
     private Servo clampServo = null;
@@ -88,7 +88,7 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
 
     // Wobble Goal Arm Motor
     private DcMotor wobbleGoalArmMotor = null;
-
+    private static final double WOBBLE_GOAL_ARM_MOTOR_POWER = 0.2;
 
     @Override
     public void runOpMode() {
@@ -207,9 +207,9 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
             /* Arm Motor */
             // To-Do: Set the motor to a certain position instead of setting its power to a certain direction
             if (gamepad2.dpad_up) {
-                wobbleGoalArmMotor.setPower(0.5);
+                wobbleGoalArmMotor.setPower(WOBBLE_GOAL_ARM_MOTOR_POWER);
             } else if (gamepad2.dpad_down) {
-                wobbleGoalArmMotor.setPower(-0.5);
+                wobbleGoalArmMotor.setPower(-WOBBLE_GOAL_ARM_MOTOR_POWER);
             } else {
                 // Reset and stop the motor
                 wobbleGoalArmMotor.setPower(0);
