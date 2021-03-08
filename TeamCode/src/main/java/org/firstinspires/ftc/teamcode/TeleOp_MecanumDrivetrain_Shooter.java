@@ -75,8 +75,8 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
     private static final double STRAFING_SENSIBILITY = 1.5;
 
     // Shooter Motors
-    private DcMotor shooterMotor1 = null;
-    private DcMotor shooterMotor2 = null;
+   // private DcMotor shooterMotor1 = null;
+   // private DcMotor shooterMotor2 = null;
 
     // Wobble Goal Clamp Servo
     private Servo clampServo = null;
@@ -123,15 +123,15 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
          * Shooter Motors
          * */
 
-        shooterMotor1 = hardwareMap.get(DcMotor.class, "shooterMotor1");
-        shooterMotor2 = hardwareMap.get(DcMotor.class, "shooterMotor2");
+        //shooterMotor1 = hardwareMap.get(DcMotor.class, "shooterMotor1");
+        //shooterMotor2 = hardwareMap.get(DcMotor.class, "shooterMotor2");
 
         /*
          * Wobble Goal Clamp Servo
          * */
 
         // Hardware map the servo object to the actual servo
-        clampServo = hardwareMap.servo.get("clawServo");
+        clampServo = hardwareMap.servo.get("clampServo");
         // Reset the servo's position to 0 degrees
         clampServo.setPosition(0.0);
 
