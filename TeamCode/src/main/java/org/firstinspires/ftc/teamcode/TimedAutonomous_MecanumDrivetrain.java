@@ -101,24 +101,36 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        //========================================
+        // AUTONOMOUS STARTS
+        //========================================
+
+        moveRobotByTime(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, runtime, DRIVE_TO_LINE_TIME, APPROACH_SPEED);
+
+        // Stop the robot after it parks on the line
+        frontLeftMotor.setPower(0.0);
+        backLeftMotor.setPower(0.0);
+        frontRightMotor.setPower(0.0);
+        backRightMotor.setPower(0.0);
+
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive() && runtime.milliseconds() < DRIVE_TO_LINE_TIME) {
-
-            //========================================
-            // Autonomous Mode
-            //========================================
-
-            // Park on the line through timing
-            frontLeftMotor.setPower(APPROACH_SPEED);
-            backLeftMotor.setPower(APPROACH_SPEED);
-            frontRightMotor.setPower(APPROACH_SPEED);
-            backRightMotor.setPower(APPROACH_SPEED);
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-            telemetry.update();
-        }
+        //while (opModeIsActive() && runtime.milliseconds() < DRIVE_TO_LINE_TIME) {
+        //
+        //    //========================================
+        //    // Autonomous Mode
+        //    //========================================
+        //
+        //    // Park on the line through timing
+        //    frontLeftMotor.setPower(APPROACH_SPEED);
+        //    backLeftMotor.setPower(APPROACH_SPEED);
+        //    frontRightMotor.setPower(APPROACH_SPEED);
+        //    backRightMotor.setPower(APPROACH_SPEED);
+        //
+        //    // Show the elapsed game time and wheel power.
+        //    telemetry.addData("Status", "Run Time: " + runtime.toString());
+        //    //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        //    telemetry.update();
+        //}
 
         // Stop all motors at the end of the autonomous period
         frontLeftMotor.setPower(0.0);
@@ -127,4 +139,31 @@ public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
         backRightMotor.setPower(0.0);
 
     }
+
+    /**
+     * Handles the autonomous movement of the robot through timing
+     *
+     * @param frontLeftMotor    Pass by reference the frontLeftMotor object
+     * @param backLeftMotor     Pass by reference the backLeftMotor object
+     * @param frontRightMotor   Pass by reference the frontRightMotor object
+     * @param backRightMotor    Pass by reference the backRightMotor object
+     *
+     * @param runTime           Pass by reference the ElapsedTime object from the match
+     * @param time              The time (in milliseconds) that the robot should travel for
+     *
+     * @param speed             The speed for all of the motors
+     * */
+    private void moveRobotByTime(DcMotor frontLeftMotor, DcMotor backLeftMotor, DcMotor frontRightMotor, DcMotor backRightMotor, ElapsedTime runTime, long time, double speed) {
+        double startRunTime = runTime.milliseconds();
+
+        while (opModeIsActive() && ((startRunTime + time) < runTime.milliseconds())) {
+
+            frontLeftMotor.setPower(speed);
+            backLeftMotor.setPower(speed);
+            frontRightMotor.setPower(speed);
+            backRightMotor.setPower(speed);
+
+        }
+    }
+
 }
