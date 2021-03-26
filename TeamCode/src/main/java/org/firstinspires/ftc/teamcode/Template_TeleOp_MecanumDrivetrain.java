@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -49,9 +50,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp Mecanum Drivetrain", group="Linear Opmode")
-//@Disabled
-public class TeleOp_MecanumDrivetrain extends LinearOpMode {
+@TeleOp(name="Template_TeleOp Mecanum Drivetrain", group="Linear Opmode")
+@Disabled
+public class Template_TeleOp_MecanumDrivetrain extends LinearOpMode {
 
     //========================================
     // DECLARE OPMODE MEMBERS
