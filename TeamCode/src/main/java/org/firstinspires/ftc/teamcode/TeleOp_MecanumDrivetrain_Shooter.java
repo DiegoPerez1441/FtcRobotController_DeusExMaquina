@@ -236,12 +236,12 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
             /* Arm Motor */
 
             /* Toggle the robot's arm motor between a regular and reduced power state */
-            if (gamepad2.left_bumper) {
+            if (gamepad2.a) {
                 // Regular speed
                 wobbleGoalArmMotorRegularPower = true;
                 telemetry.addData("Arm Power", "Regular");
                 telemetry.update();
-            } else if (gamepad2.right_bumper) {
+            } else if (gamepad2.y) {
                 // Slower speed
                 wobbleGoalArmMotorRegularPower = false;
                 telemetry.addData("Arm Power", "Reduced Power");
