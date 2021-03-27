@@ -190,9 +190,13 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
             if (gamepad1.left_bumper) {
                 // Regular speed
                 drivetrainRegularSpeed = true;
+                telemetry.addData("Drivetrain Mode", "Regular");
+                telemetry.update();
             } else if (gamepad1.right_bumper) {
                 // Slower speed
                 drivetrainRegularSpeed = false;
+                telemetry.addData("Drivetrain Mode", "Reduced Speed");
+                telemetry.update();
             }
 
             if (drivetrainRegularSpeed) {
@@ -235,12 +239,12 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
             if (gamepad2.left_bumper) {
                 // Regular speed
                 wobbleGoalArmMotorRegularPower = true;
-                telemetry.addData("Drivetrain Mode", "Regular");
+                telemetry.addData("Arm Power", "Regular");
                 telemetry.update();
             } else if (gamepad2.right_bumper) {
                 // Slower speed
                 wobbleGoalArmMotorRegularPower = false;
-                telemetry.addData("Drivetrain Mode", "Reduced Speed");
+                telemetry.addData("Arm Power", "Reduced Power");
                 telemetry.update();
             }
 
