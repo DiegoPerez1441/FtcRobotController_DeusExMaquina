@@ -235,9 +235,13 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
             if (gamepad2.left_bumper) {
                 // Regular speed
                 wobbleGoalArmMotorRegularPower = true;
+                telemetry.addData("Drivetrain Mode", "Regular");
+                telemetry.update();
             } else if (gamepad2.right_bumper) {
                 // Slower speed
                 wobbleGoalArmMotorRegularPower = false;
+                telemetry.addData("Drivetrain Mode", "Reduced Speed");
+                telemetry.update();
             }
 
             // Toggle in between regular and reduced power for the wobble goal arm motor
