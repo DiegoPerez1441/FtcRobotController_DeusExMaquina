@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -67,7 +66,7 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
     private DcMotor backRightMotor = null;
 
     private boolean drivetrainRegularSpeed = true;
-    private static final double REDUCED_DRIVETRAIN_SPEED_COEFFICIENT = 2.0; // Should be a value n > 1
+    private static final double DRIVETRAIN_REDUCED_SPEED_COEFFICIENT = 2.0; // Should be a value n > 1
 
     // Constants
     private static final double STRAFING_SENSIBILITY = 1.5;
@@ -156,10 +155,10 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
                 backRightMotor.setPower(backRightPower);
             } else {
                 // Update Drivetrain motors at a reduced speed
-                frontLeftMotor.setPower(frontLeftPower / REDUCED_DRIVETRAIN_SPEED_COEFFICIENT);
-                backLeftMotor.setPower(backLeftPower / REDUCED_DRIVETRAIN_SPEED_COEFFICIENT);
-                frontRightMotor.setPower(frontRightPower / REDUCED_DRIVETRAIN_SPEED_COEFFICIENT);
-                backRightMotor.setPower(backRightPower / REDUCED_DRIVETRAIN_SPEED_COEFFICIENT);
+                frontLeftMotor.setPower(frontLeftPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
+                backLeftMotor.setPower(backLeftPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
+                frontRightMotor.setPower(frontRightPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
+                backRightMotor.setPower(backRightPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
             }
 
 
