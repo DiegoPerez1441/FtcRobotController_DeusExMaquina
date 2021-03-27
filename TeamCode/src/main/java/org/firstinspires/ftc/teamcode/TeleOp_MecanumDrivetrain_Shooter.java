@@ -71,8 +71,13 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
     private DcMotor backLeftMotor = null;
     private DcMotor frontRightMotor = null;
     private DcMotor backRightMotor = null;
+
+    private boolean drivetrainRegularSpeed = true;
+    private static final double REDUCED_DRIVETRAIN_SPEED_COEFFICIENT = 2.0; // Should be a value n > 1
+
     /* Drivetrain Constants */
     private static final double STRAFING_SENSIBILITY = 1.5;
+
 
     // Shooter Motors
     //private DcMotor shooterMotor1 = null;
@@ -178,11 +183,28 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
                 backRightPower /= max;
             }
 
-            // Update Drivetrain
-            frontLeftMotor.setPower(frontLeftPower);
-            backLeftMotor.setPower(backLeftPower);
-            frontRightMotor.setPower(frontRightPower);
-            backRightMotor.setPower(backRightPower);
+            /* Toggle the robot's drivetrain between a regular and reduced speed movement state */
+            if (gamepad1.left_bumper) {
+                // Regular speed
+                drivetrainRegularSpeed = true;
+            } else if (gamepad1.right_bumper) {
+                // Slower speed
+                drivetrainRegularSpeed = false;
+            }
+
+            if (drivetrainRegularSpeed) {
+                // Update Drivetrain motors at a regular speed
+                frontLeftMotor.setPower(frontLeftPower);
+                backLeftMotor.setPower(backLeftPower);
+                frontRightMotor.setPower(frontRightPower);
+                backRightMotor.setPower(backRightPower);
+            } else {
+                // Update Drivetrain motors at a reduced speed
+                frontLeftMotor.setPower(frontLeftPower / REDUCED_DRIVETRAIN_SPEED_COEFFICIENT);
+                backLeftMotor.setPower(backLeftPower / REDUCED_DRIVETRAIN_SPEED_COEFFICIENT);
+                frontRightMotor.setPower(frontRightPower / REDUCED_DRIVETRAIN_SPEED_COEFFICIENT);
+                backRightMotor.setPower(backRightPower / REDUCED_DRIVETRAIN_SPEED_COEFFICIENT);
+            }
 
             //========================================
             // Wobble Goal Arm
