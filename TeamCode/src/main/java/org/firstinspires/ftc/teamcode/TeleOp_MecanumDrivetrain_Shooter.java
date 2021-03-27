@@ -95,6 +95,9 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
     private DcMotor wobbleGoalArmMotor = null;
     private static final double WOBBLE_GOAL_ARM_MOTOR_POWER = 0.2;
 
+    private boolean wobbleGoalArmMotorRegularPower = true;
+    private static final double WOBBLE_GOAL_ARM_MOTOR_REDUCED_POWER_COEFFICIENT = 2.0; // Should be a value n > 1
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -227,14 +230,40 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
             }
 
             /* Arm Motor */
-            // To-Do: Set the motor to a certain position instead of setting its power to a certain direction
-            if (gamepad2.dpad_up) {
-                wobbleGoalArmMotor.setPower(WOBBLE_GOAL_ARM_MOTOR_POWER);
-            } else if (gamepad2.dpad_down) {
-                wobbleGoalArmMotor.setPower(-WOBBLE_GOAL_ARM_MOTOR_POWER);
+
+            /* Toggle the robot's arm motor between a regular and reduced power state */
+            if (gamepad2.left_bumper) {
+                // Regular speed
+                wobbleGoalArmMotorRegularPower = true;
+            } else if (gamepad2.right_bumper) {
+                // Slower speed
+                wobbleGoalArmMotorRegularPower = false;
+            }
+
+            // Toggle in between regular and reduced power for the wobble goal arm motor
+            if (wobbleGoalArmMotorRegularPower) {
+                // Regular Power
+                if (gamepad2.dpad_up) {
+                    wobbleGoalArmMotor.setPower(WOBBLE_GOAL_ARM_MOTOR_POWER);
+                } else if (gamepad2.dpad_down) {
+                    wobbleGoalArmMotor.setPower(-WOBBLE_GOAL_ARM_MOTOR_POWER);
+                } else {
+                    // Reset and stop the motor
+                    wobbleGoalArmMotor.setPower(0);
+                }
             } else {
-                // Reset and stop the motor
-                wobbleGoalArmMotor.setPower(0);
+                // Reduced Power
+                // Wobble goal arm motor reduced speed/power
+                double wobbleGoalArmMotorReducedPower = WOBBLE_GOAL_ARM_MOTOR_POWER / WOBBLE_GOAL_ARM_MOTOR_REDUCED_POWER_COEFFICIENT;
+
+                if (gamepad2.dpad_up) {
+                    wobbleGoalArmMotor.setPower(wobbleGoalArmMotorReducedPower);
+                } else if (gamepad2.dpad_down) {
+                    wobbleGoalArmMotor.setPower(-wobbleGoalArmMotorReducedPower);
+                } else {
+                    // Reset and stop the motor
+                    wobbleGoalArmMotor.setPower(0);
+                }
             }
 
 
