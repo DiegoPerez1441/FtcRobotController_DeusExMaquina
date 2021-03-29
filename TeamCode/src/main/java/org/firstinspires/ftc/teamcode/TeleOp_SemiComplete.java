@@ -49,9 +49,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp Mecanum Drivetrain_Shooter", group="Linear Opmode")
+@TeleOp(name="TeleOp SemiComplete", group="Linear Opmode")
 //@Disabled
-public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
+public class TeleOp_SemiComplete extends LinearOpMode {
 
     // State of the wobble goal claw servo
     private enum ClampServoState {
@@ -77,6 +77,9 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
 
     /* Drivetrain Constants */
     private static final double STRAFING_SENSIBILITY = 1.5;
+
+    // The higher the number the more sensitive and the smaller the number the less sensitive the drivetrain controls are
+    private static final double GAMEPAD1_DRIVETRAIN_SENSITIVITY = 1.0;
 
 
     // Shooter Motors
@@ -160,9 +163,9 @@ public class TeleOp_MecanumDrivetrain_Shooter extends LinearOpMode {
             // MECANUM DRIVETRAIN
             //========================================
 
-            double y = -gamepad1.left_stick_y;                          // This is reversed
-            double x = gamepad1.left_stick_x * STRAFING_SENSIBILITY;    // Counteract strafing imperfections
-            double rx = gamepad1.right_stick_x;                         // Strafing
+            double y = -gamepad1.left_stick_y * GAMEPAD1_DRIVETRAIN_SENSITIVITY;                            // This is reversed
+            double x = (gamepad1.left_stick_x * STRAFING_SENSIBILITY) * GAMEPAD1_DRIVETRAIN_SENSITIVITY;    // Counteract strafing imperfections
+            double rx = gamepad1.right_stick_x * GAMEPAD1_DRIVETRAIN_SENSITIVITY;                           // Strafing
 
             double frontLeftPower = y + x + rx;
             double backLeftPower = y - x + rx;
