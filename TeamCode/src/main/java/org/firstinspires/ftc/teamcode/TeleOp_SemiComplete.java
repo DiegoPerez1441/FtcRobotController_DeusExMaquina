@@ -220,6 +220,10 @@ public class TeleOp_SemiComplete extends LinearOpMode {
             // Wobble Goal Arm
             //========================================
 
+            /* To do list:
+            - Redesign and use an "elevator instead"
+             */
+
             /* Clamp */
             if (gamepad2.right_trigger > 0) {
                 clampServo.setPosition(gamepad2.right_trigger);
