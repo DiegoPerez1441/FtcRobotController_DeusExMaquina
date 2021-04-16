@@ -32,7 +32,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.enums.ClampServoState;
 
 
 /**
@@ -48,9 +51,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp Mecanum Drivetrain", group="Linear Opmode")
+@TeleOp(name="TeleOp SemiComplete", group="Linear Opmode")
 //@Disabled
-public class TeleOp_MecanumDrivetrain extends LinearOpMode {
+public class TeleOp_SemiComplete extends LinearOpMode {
+
+    // State of the wobble goal claw servo
+    //private enum ClampServoState {
+    //    OPEN,
+    //    CLOSED
+    //}
 
     //========================================
     // DECLARE OPMODE MEMBERS
@@ -59,7 +68,7 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
     // Misc
     private ElapsedTime runtime = new ElapsedTime();
 
-    // Motors
+    // Drivetrain Motors
     private DcMotor frontLeftMotor = null;
     private DcMotor backLeftMotor = null;
     private DcMotor frontRightMotor = null;
@@ -68,8 +77,31 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
     private boolean drivetrainRegularSpeed = true;
     private static final double DRIVETRAIN_REDUCED_SPEED_COEFFICIENT = 2.0; // Should be a value n > 1
 
-    // Constants
+    /* Drivetrain Constants */
     private static final double STRAFING_SENSIBILITY = 1.5;
+
+    // The higher the number the more sensitive and the smaller the number the less sensitive the drivetrain controls are
+    private static final double GAMEPAD1_DRIVETRAIN_SENSITIVITY = 1.0;
+
+
+    // Shooter Motors
+    //private DcMotor shooterMotor1 = null;
+    //private DcMotor shooterMotor2 = null;
+
+    // Wobble Goal Clamp Servo
+    private Servo clampServo = null;
+
+    // State of the wobble goal clamp servo
+    private ClampServoState clampServo_state = ClampServoState.CLOSED;
+    /* Wobble Goal Clamp Default Values and Constants */
+    private static final double CLAMPSERVO_OPENPOSITION = 0.7;
+
+    // Wobble Goal Arm Motor
+    private DcMotor wobbleGoalArmMotor = null;
+    private static final double WOBBLE_GOAL_ARM_MOTOR_POWER = 0.2;
+
+    private boolean wobbleGoalArmMotorRegularPower = true;
+    private static final double WOBBLE_GOAL_ARM_MOTOR_REDUCED_POWER_COEFFICIENT = 2.0; // Should be a value n > 1
 
     @Override
     public void runOpMode() {
@@ -100,6 +132,27 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
+        /*
+         * Shooter Motors
+         * */
+
+        //shooterMotor1 = hardwareMap.get(DcMotor.class, "shooterMotor1");
+        //shooterMotor2 = hardwareMap.get(DcMotor.class, "shooterMotor2");
+
+        /*
+         * Wobble Goal Clamp Servo
+         * */
+
+        // Hardware map the servo object to the actual servo
+        clampServo = hardwareMap.servo.get("clampServo");
+        // Reset the servo's position to 0 degrees
+        clampServo.setPosition(0.0);
+
+        /*
+         * Wobble Goal Motor
+         * */
+
+        wobbleGoalArmMotor = hardwareMap.get(DcMotor.class, "wobbleGoalArmMotor");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -112,9 +165,9 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
             // MECANUM DRIVETRAIN
             //========================================
 
-            double y = -gamepad1.left_stick_y;                          // This is reversed
-            double x = gamepad1.left_stick_x * STRAFING_SENSIBILITY;    // Counteract strafing imperfections
-            double rx = gamepad1.right_stick_x;                         // Strafing
+            double y = -gamepad1.left_stick_y * GAMEPAD1_DRIVETRAIN_SENSITIVITY;                            // This is reversed
+            double x = (gamepad1.left_stick_x * STRAFING_SENSIBILITY) * GAMEPAD1_DRIVETRAIN_SENSITIVITY;    // Counteract strafing imperfections
+            double rx = gamepad1.right_stick_x * GAMEPAD1_DRIVETRAIN_SENSITIVITY;                           // Strafing
 
             double frontLeftPower = y + x + rx;
             double backLeftPower = y - x + rx;
@@ -142,9 +195,13 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
             if (gamepad1.left_bumper) {
                 // Regular speed
                 drivetrainRegularSpeed = true;
+                telemetry.addData("Drivetrain Mode", "Regular");
+                telemetry.update();
             } else if (gamepad1.right_bumper) {
                 // Slower speed
                 drivetrainRegularSpeed = false;
+                telemetry.addData("Drivetrain Mode", "Reduced Speed");
+                telemetry.update();
             }
 
             if (drivetrainRegularSpeed) {
@@ -161,7 +218,81 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
                 backRightMotor.setPower(backRightPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
             }
 
+            //========================================
+            // Wobble Goal Arm
+            //========================================
 
+            /* To do list:
+            - Redesign and use an "elevator instead"
+             */
+
+            /* Clamp */
+            if (gamepad2.right_trigger > 0) {
+                clampServo.setPosition(gamepad2.right_trigger);
+            } else {
+                // Toggle the wobble goal claw servo
+                if (gamepad2.right_bumper && (clampServo_state == ClampServoState.CLOSED)) {
+                    // Open
+                    clampServo.setPosition(CLAMPSERVO_OPENPOSITION);
+                    clampServo_state = ClampServoState.OPEN;
+                } else if (gamepad2.left_bumper && (clampServo_state == ClampServoState.OPEN)) {
+                    // Close
+                    clampServo.setPosition(0.0);
+                    clampServo_state = ClampServoState.CLOSED;
+                }
+            }
+
+            /* Arm Motor */
+
+            /* Toggle the robot's arm motor between a regular and reduced power state */
+            if (gamepad2.a) {
+                // Regular speed
+                wobbleGoalArmMotorRegularPower = true;
+                telemetry.addData("Arm Power", "Regular");
+                telemetry.update();
+            } else if (gamepad2.y) {
+                // Slower speed
+                wobbleGoalArmMotorRegularPower = false;
+                telemetry.addData("Arm Power", "Reduced Power");
+                telemetry.update();
+            }
+
+            // Toggle in between regular and reduced power for the wobble goal arm motor
+            if (wobbleGoalArmMotorRegularPower) {
+                // Regular Power
+                if (gamepad2.dpad_up) {
+                    wobbleGoalArmMotor.setPower(WOBBLE_GOAL_ARM_MOTOR_POWER);
+                } else if (gamepad2.dpad_down) {
+                    wobbleGoalArmMotor.setPower(-WOBBLE_GOAL_ARM_MOTOR_POWER);
+                } else {
+                    // Reset and stop the motor
+                    wobbleGoalArmMotor.setPower(0);
+                }
+            } else {
+                // Reduced Power
+                // Wobble goal arm motor reduced speed/power
+                double wobbleGoalArmMotorReducedPower = WOBBLE_GOAL_ARM_MOTOR_POWER / WOBBLE_GOAL_ARM_MOTOR_REDUCED_POWER_COEFFICIENT;
+
+                if (gamepad2.dpad_up) {
+                    wobbleGoalArmMotor.setPower(wobbleGoalArmMotorReducedPower);
+                } else if (gamepad2.dpad_down) {
+                    wobbleGoalArmMotor.setPower(-wobbleGoalArmMotorReducedPower);
+                } else {
+                    // Reset and stop the motor
+                    wobbleGoalArmMotor.setPower(0);
+                }
+            }
+
+
+            //========================================
+            // SHOOTER
+            //========================================
+            /* To do list:
+            - Intake system
+            - Keep track of how many rings at all times
+            - There's a servo/something that pushes rings
+            - Shooter/Motors need to turn on when the game starts
+             */
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

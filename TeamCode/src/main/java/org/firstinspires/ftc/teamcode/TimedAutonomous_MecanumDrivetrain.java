@@ -29,8 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -48,9 +48,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp Mecanum Drivetrain", group="Linear Opmode")
+@Autonomous(name="Timed Autonomous Mecanum Drivetrain OpMode", group="Linear Opmode")
 //@Disabled
-public class TeleOp_MecanumDrivetrain extends LinearOpMode {
+public class TimedAutonomous_MecanumDrivetrain extends LinearOpMode {
 
     //========================================
     // DECLARE OPMODE MEMBERS
@@ -58,6 +58,7 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
 
     // Misc
     private ElapsedTime runtime = new ElapsedTime();
+    private static boolean autonomousRunning = true;
 
     // Motors
     private DcMotor frontLeftMotor = null;
@@ -65,11 +66,12 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
     private DcMotor frontRightMotor = null;
     private DcMotor backRightMotor = null;
 
-    private boolean drivetrainRegularSpeed = true;
-    private static final double DRIVETRAIN_REDUCED_SPEED_COEFFICIENT = 2.0; // Should be a value n > 1
+    // Servos
 
     // Constants
-    private static final double STRAFING_SENSIBILITY = 1.5;
+    private static final double APPROACH_SPEED = 1;
+    private static final long DRIVE_TO_LINE_TIME = 2000;
+
 
     @Override
     public void runOpMode() {
@@ -83,11 +85,6 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-
-        /*
-        * Motors
-        * */
-
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
         backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
@@ -100,73 +97,73 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
+        //========================================
+        // AUTONOMOUS STARTS
+        //========================================
+
+        moveRobotByTime(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, runtime, DRIVE_TO_LINE_TIME, APPROACH_SPEED);
+
+        // Stop the robot after it parks on the line
+        frontLeftMotor.setPower(0.0);
+        backLeftMotor.setPower(0.0);
+        frontRightMotor.setPower(0.0);
+        backRightMotor.setPower(0.0);
+
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+        //while (opModeIsActive() && runtime.milliseconds() < DRIVE_TO_LINE_TIME) {
+        //
+        //    //========================================
+        //    // Autonomous Mode
+        //    //========================================
+        //
+        //    // Park on the line through timing
+        //    frontLeftMotor.setPower(APPROACH_SPEED);
+        //    backLeftMotor.setPower(APPROACH_SPEED);
+        //    frontRightMotor.setPower(APPROACH_SPEED);
+        //    backRightMotor.setPower(APPROACH_SPEED);
+        //
+        //    // Show the elapsed game time and wheel power.
+        //    telemetry.addData("Status", "Run Time: " + runtime.toString());
+        //    //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        //    telemetry.update();
+        //}
 
-            //========================================
-            // MECANUM DRIVETRAIN
-            //========================================
+        // Stop all motors at the end of the autonomous period
+        frontLeftMotor.setPower(0.0);
+        backLeftMotor.setPower(0.0);
+        frontRightMotor.setPower(0.0);
+        backRightMotor.setPower(0.0);
 
-            double y = -gamepad1.left_stick_y;                          // This is reversed
-            double x = gamepad1.left_stick_x * STRAFING_SENSIBILITY;    // Counteract strafing imperfections
-            double rx = gamepad1.right_stick_x;                         // Strafing
+    }
 
-            double frontLeftPower = y + x + rx;
-            double backLeftPower = y - x + rx;
-            double frontRightPower = y - x - rx;
-            double backRightPower = y + x - rx;
+    /**
+     * Handles the autonomous movement of the robot through timing
+     *
+     * @param frontLeftMotor    Pass by reference the frontLeftMotor object
+     * @param backLeftMotor     Pass by reference the backLeftMotor object
+     * @param frontRightMotor   Pass by reference the frontRightMotor object
+     * @param backRightMotor    Pass by reference the backRightMotor object
+     *
+     * @param runTime           Pass by reference the ElapsedTime object from the match
+     * @param time              The time (in milliseconds) that the robot should travel for
+     *
+     * @param speed             The speed for all of the motors
+     * */
+    private void moveRobotByTime(DcMotor frontLeftMotor, DcMotor backLeftMotor, DcMotor frontRightMotor, DcMotor backRightMotor, ElapsedTime runTime, long time, double speed) {
+        double startRunTime = runTime.milliseconds();
 
-            // Scale values in between -1.0 and 1.0 to prevent the clipping of values in order to maintain the driving ratio
-            if (Math.abs(frontLeftPower) > 1 || Math.abs(backLeftPower) > 1 ||
-                Math.abs(frontRightPower) > 1 || Math.abs(backRightPower) > 1 ) {
+        while (opModeIsActive() && ((startRunTime + time) < runTime.milliseconds())) {
 
-                // Find the largest value
-                double max = 0;
-                max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
-                max = Math.max(Math.abs(frontRightPower), max);
-                max = Math.max(Math.abs(backRightPower), max);
+            frontLeftMotor.setPower(speed);
+            backLeftMotor.setPower(speed);
+            frontRightMotor.setPower(speed);
+            backRightMotor.setPower(speed);
 
-                // Divide everything by max (it's positive so we don't need to worry about signs)
-                frontLeftPower /= max;
-                backLeftPower /= max;
-                frontRightPower /= max;
-                backRightPower /= max;
-            }
-
-            /* Toggle the robot's drivetrain between a regular and reduced speed movement state */
-            if (gamepad1.left_bumper) {
-                // Regular speed
-                drivetrainRegularSpeed = true;
-            } else if (gamepad1.right_bumper) {
-                // Slower speed
-                drivetrainRegularSpeed = false;
-            }
-
-            if (drivetrainRegularSpeed) {
-                // Update Drivetrain motors at a regular speed
-                frontLeftMotor.setPower(frontLeftPower);
-                backLeftMotor.setPower(backLeftPower);
-                frontRightMotor.setPower(frontRightPower);
-                backRightMotor.setPower(backRightPower);
-            } else {
-                // Update Drivetrain motors at a reduced speed
-                frontLeftMotor.setPower(frontLeftPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
-                backLeftMotor.setPower(backLeftPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
-                frontRightMotor.setPower(frontRightPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
-                backRightMotor.setPower(backRightPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
-            }
-
-
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "front left (%.2f), back left (%.2f), front right (%.2f), back right (%.2f)", frontLeftPower, backLeftPower, frontRightPower, backRightPower);
-            telemetry.update();
         }
     }
+
 }

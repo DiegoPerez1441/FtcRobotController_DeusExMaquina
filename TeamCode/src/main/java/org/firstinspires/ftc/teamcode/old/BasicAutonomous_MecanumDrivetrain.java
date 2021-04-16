@@ -27,11 +27,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.old;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -48,9 +50,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp Mecanum Drivetrain", group="Linear Opmode")
-//@Disabled
-public class TeleOp_MecanumDrivetrain extends LinearOpMode {
+@Autonomous(name="Basic Autonomous Mecanum Drivetrain OpMode", group="Linear Opmode")
+@Disabled
+public class BasicAutonomous_MecanumDrivetrain extends LinearOpMode {
 
     //========================================
     // DECLARE OPMODE MEMBERS
@@ -65,11 +67,33 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
     private DcMotor frontRightMotor = null;
     private DcMotor backRightMotor = null;
 
-    private boolean drivetrainRegularSpeed = true;
-    private static final double DRIVETRAIN_REDUCED_SPEED_COEFFICIENT = 2.0; // Should be a value n > 1
+    // Servos
+    //Servo clawServo;
+    //double clawServoPosition = 0.0;
+
+    // Sensors
+    LightSensor lightSensor; // Primary LEGO Light sensor,
+    //OpticalDistanceSensor lightSensor; // Alternative MR ODS sensor
 
     // Constants
-    private static final double STRAFING_SENSIBILITY = 1.5;
+    //private static final double CLAW_SPEED = 0.2;
+    private static final double WHITE_THRESHOLD = 0.2; // spans between 0.1 - 0.5 from dark to light
+    private static final double APPROACH_SPEED  = 0.5;
+
+    //========================================
+    // Methods
+    //========================================
+
+    // Constrain a value of type double between a min and a max value
+    private static double limitDouble(double value, double min, double max) {
+        if (value >= max) {
+            return max;
+        } else if (value <= min) {
+            return min;
+        } else {
+            return value;
+        }
+    }
 
     @Override
     public void runOpMode() {
@@ -95,78 +119,63 @@ public class TeleOp_MecanumDrivetrain extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        //leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        //rightDrive.setDirection(DcMotor.Direction.FORWARD);
 
+        /*
+        * Servos
+        * */
+
+        // We hardware mapped the servo object to the actual servo
+        //clawServo = hardwareMap.servo.get("clawServo");
+        // Reset the servo's position to 0 degrees
+        //clawServo.setPosition(0.0);
+
+        /*
+        * Sensors
+        * */
+
+        // Get a reference to our Light Sensor object and map it to the hardware
+        lightSensor = hardwareMap.lightSensor.get("sensor_light");              // Primary LEGO Light Sensor
+        //lightSensor = hardwareMap.opticalDistanceSensor.get("sensor_ods");    // Alternative MR ODS sensor.
+
+        // turn on LED of light sensor
+        lightSensor.enableLed(true);
+
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Ready to run");
+        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
+        // Abort this loop is started or stopped.
+        while (!(isStarted() || isStopRequested())) {
+            // Display the light level while we are waiting to start
+            telemetry.addData("Light Level", lightSensor.getLightDetected());
+            telemetry.update();
+            idle(); // Put current thread to sleep
+        }
+
+        // Start moving the robot forward at a constant pace and then begin looking for the white line
+        frontLeftMotor.setPower(APPROACH_SPEED);
+        backLeftMotor.setPower(APPROACH_SPEED);
+        frontRightMotor.setPower(APPROACH_SPEED);
+        backRightMotor.setPower(APPROACH_SPEED);
+
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+        while (opModeIsActive() && (lightSensor.getLightDetected() < WHITE_THRESHOLD)) {
 
-            //========================================
-            // MECANUM DRIVETRAIN
-            //========================================
-
-            double y = -gamepad1.left_stick_y;                          // This is reversed
-            double x = gamepad1.left_stick_x * STRAFING_SENSIBILITY;    // Counteract strafing imperfections
-            double rx = gamepad1.right_stick_x;                         // Strafing
-
-            double frontLeftPower = y + x + rx;
-            double backLeftPower = y - x + rx;
-            double frontRightPower = y - x - rx;
-            double backRightPower = y + x - rx;
-
-            // Scale values in between -1.0 and 1.0 to prevent the clipping of values in order to maintain the driving ratio
-            if (Math.abs(frontLeftPower) > 1 || Math.abs(backLeftPower) > 1 ||
-                Math.abs(frontRightPower) > 1 || Math.abs(backRightPower) > 1 ) {
-
-                // Find the largest value
-                double max = 0;
-                max = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
-                max = Math.max(Math.abs(frontRightPower), max);
-                max = Math.max(Math.abs(backRightPower), max);
-
-                // Divide everything by max (it's positive so we don't need to worry about signs)
-                frontLeftPower /= max;
-                backLeftPower /= max;
-                frontRightPower /= max;
-                backRightPower /= max;
-            }
-
-            /* Toggle the robot's drivetrain between a regular and reduced speed movement state */
-            if (gamepad1.left_bumper) {
-                // Regular speed
-                drivetrainRegularSpeed = true;
-            } else if (gamepad1.right_bumper) {
-                // Slower speed
-                drivetrainRegularSpeed = false;
-            }
-
-            if (drivetrainRegularSpeed) {
-                // Update Drivetrain motors at a regular speed
-                frontLeftMotor.setPower(frontLeftPower);
-                backLeftMotor.setPower(backLeftPower);
-                frontRightMotor.setPower(frontRightPower);
-                backRightMotor.setPower(backRightPower);
-            } else {
-                // Update Drivetrain motors at a reduced speed
-                frontLeftMotor.setPower(frontLeftPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
-                backLeftMotor.setPower(backLeftPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
-                frontRightMotor.setPower(frontRightPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
-                backRightMotor.setPower(backRightPower / DRIVETRAIN_REDUCED_SPEED_COEFFICIENT);
-            }
-
-
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "front left (%.2f), back left (%.2f), front right (%.2f), back right (%.2f)", frontLeftPower, backLeftPower, frontRightPower, backRightPower);
+            // Display the light level while we are looking for the line
+            telemetry.addData("Light Level",  lightSensor.getLightDetected());
             telemetry.update();
+
         }
+
+        // Stop all motors at the end of the autonomous period
+        frontLeftMotor.setPower(0.0);
+        backLeftMotor.setPower(0.0);
+        frontRightMotor.setPower(0.0);
+        backRightMotor.setPower(0.0);
+
     }
 }
