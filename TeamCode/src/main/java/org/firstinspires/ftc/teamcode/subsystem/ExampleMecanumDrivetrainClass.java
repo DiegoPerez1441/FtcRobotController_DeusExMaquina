@@ -29,12 +29,15 @@
 
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 /**
+ *
+ *
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
  * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
@@ -48,8 +51,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="New TeleOp", group="Linear Opmode")
-//@Disabled
-public class NewTeleOp extends LinearOpMode {
+@Disabled
+public class ExampleMecanumDrivetrainClass extends LinearOpMode {
 
     //========================================
     // DECLARE OPMODE MEMBERS

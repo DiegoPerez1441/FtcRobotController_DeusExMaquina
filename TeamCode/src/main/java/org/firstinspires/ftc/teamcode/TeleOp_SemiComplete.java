@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.enums.ClampServoState;
+
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -54,10 +56,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class TeleOp_SemiComplete extends LinearOpMode {
 
     // State of the wobble goal claw servo
-    private enum ClampServoState {
-        OPEN,
-        CLOSED
-    }
+    //private enum ClampServoState {
+    //    OPEN,
+    //    CLOSED
+    //}
 
     //========================================
     // DECLARE OPMODE MEMBERS
