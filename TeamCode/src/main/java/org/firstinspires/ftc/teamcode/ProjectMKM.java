@@ -44,18 +44,19 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *      - Up:       Title Screen(mkm_titlescreen)
  *      - Right:    Luigi Circuit and Mario Circuit(mkm_luigicircuitandmariocircuit)
  *      - Down:     Coconut Mall(mkm_coconutmall)
- *      - Left:     To be determined...
+ *      - Left:     Star Theme(mkm_startheme)
  *
- * Sound Files Info:
- * For sound files to be used as a compiled-in resource, they need to be located in a folder called "raw" under your "res" (resources) folder.
- * Path: /TeamCode/src/main/res/raw
+ * Info:
+ *      For sound files to be used as a compiled-in resource, they need to be located in a folder called "raw" under your "res" (resources) folder
+ *      Path: /TeamCode/src/main/res/raw
+ *
+ *      The name you give your .wav files will become the resource ID for these sounds
+ *      eg:  music.wav becomes R.raw.music
  *
  * Requirements:
- * - File name should be lower-case characters, no spaces, and no special characters other than underscores
- * - File type must be .wav
- *
- * The name you give your .wav files will become the resource ID for these sounds.
- * eg:  gold.wav becomes R.raw.gold
+ *      - Audio resource file names should be lower-case characters, no spaces, and no special characters other than underscores
+ *      - Audio resource file types must be .wav
+ *      - You must compile this application to be able to run it since it has dependencies
  */
 
 @TeleOp(name="Project MKM", group="Concept")
@@ -68,18 +69,19 @@ public class ProjectMKM extends LinearOpMode {
     private boolean mkm_titlescreenFound;                   // dpad up
     private boolean mkm_luigicircuitandmariocircuitFound;   // dpad right
     private boolean mkm_coconutmallFound;                   // dpad down
+    private boolean mkm_starthemeFound;                     // dpad left
 
     // gamepad1 button state variables
     private boolean isDpad_up = false;
     private boolean isDpad_right = false;
     private boolean isDpad_down = false;
-    //private boolean isDpad_left = false;
+    private boolean isDpad_left = false;
 
     // gamepad1 button history variables
     private boolean wasDpad_up = false;
     private boolean wasDpad_right = false;
     private boolean wasDpad_down = false;
-    //private boolean wasDpad_left = false;
+    private boolean wasDpad_left = false;
 
     @Override
     public void runOpMode() {
@@ -88,6 +90,7 @@ public class ProjectMKM extends LinearOpMode {
         int mkm_titlescreenSoundID = hardwareMap.appContext.getResources().getIdentifier("mkm_titlescreen", "raw", hardwareMap.appContext.getPackageName());
         int mkm_luigicircuitandmariocircuitSoundID = hardwareMap.appContext.getResources().getIdentifier("mkm_luigicircuitandmariocircuit",   "raw", hardwareMap.appContext.getPackageName());
         int mkm_coconutmallSoundID = hardwareMap.appContext.getResources().getIdentifier("mkm_coconutmall", "raw", hardwareMap.appContext.getPackageName());
+        int mkm_starthemeSoundID = hardwareMap.appContext.getResources().getIdentifier("mkm_startheme", "raw", hardwareMap.appContext.getPackageName());
 
         // Determine if sound resources are found.
         // Note: Preloading is NOT required, but it's a good way to verify all your sounds are available before you run.
@@ -103,18 +106,23 @@ public class ProjectMKM extends LinearOpMode {
             mkm_coconutmallFound = SoundPlayer.getInstance().preload(hardwareMap.appContext, mkm_coconutmallSoundID);
         }
 
+        if (mkm_starthemeSoundID != 0) {
+            mkm_starthemeFound = SoundPlayer.getInstance().preload(hardwareMap.appContext, mkm_starthemeSoundID);
+        }
+
 
         // Display sound status
-        telemetry.addData("mkm_titlescreen resource",   mkm_titlescreenFound ? "Found" : "NOT found\n Add gold.wav to /src/main/res/raw" );
-        telemetry.addData("mkm_luigicircuitandmariocircuit resource", mkm_luigicircuitandmariocircuitFound ? "Found" : "Not found\n Add silver.wav to /src/main/res/raw" );
-        telemetry.addData("mkm_coconutmall resource",   mkm_coconutmallFound ? "Found" : "NOT found\n Add gold.wav to /src/main/res/raw" );
+        telemetry.addData("mkm_titlescreen resource",   mkm_titlescreenFound ? "Found" : "NOT found\n Add mkm_titlescreen.wav to /src/main/res/raw");
+        telemetry.addData("mkm_luigicircuitandmariocircuit resource", mkm_luigicircuitandmariocircuitFound ? "Found" : "Not found\n Add mkm_luigicircuitandmariocircuit.wav to /src/main/res/raw");
+        telemetry.addData("mkm_coconutmall resource",   mkm_coconutmallFound ? "Found" : "NOT found\n Add mkm_coconutmall.wav to /src/main/res/raw");
+        telemetry.addData("mkm_startheme resource",   mkm_starthemeFound ? "Found" : "NOT found\n Add mkm_startheme.wav to /src/main/res/raw");
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData(">", "Press Start to continue");
         telemetry.update();
         waitForStart();
 
-        telemetry.addData(">", "Press dpad buttons to play sounds...");
+        telemetry.addData(">", "Press gamepad1's dpad buttons to play sounds...");
         telemetry.update();
 
         // Run until the end of the match (driver presses STOP)
@@ -141,11 +149,18 @@ public class ProjectMKM extends LinearOpMode {
                 telemetry.update();
             }
 
+            // Play mkm_startheme each time gamepad1 dpad_left is pressed
+            if (mkm_starthemeFound && (isDpad_left = gamepad1.dpad_left) && !wasDpad_left) {
+                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, mkm_starthemeSoundID);
+                telemetry.addData("Playing", "mkm_startheme");
+                telemetry.update();
+            }
+
             // Save last button states
             wasDpad_up = isDpad_up;
             wasDpad_right = isDpad_right;
             wasDpad_down = isDpad_down;
-            //wasDpad_left = isDpad_left;
+            wasDpad_left = isDpad_left;
 
         }
     }
