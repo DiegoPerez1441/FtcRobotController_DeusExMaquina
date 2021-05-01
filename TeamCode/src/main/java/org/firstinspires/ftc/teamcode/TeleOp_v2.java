@@ -51,7 +51,7 @@ import org.firstinspires.ftc.teamcode.enums.ClampServoState;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp SemiComplete", group="Linear Opmode")
+@TeleOp(name="TeleOp_v2", group="Linear Opmode")
 //@Disabled
 public class TeleOp_v2 extends LinearOpMode {
 
@@ -234,6 +234,9 @@ public class TeleOp_v2 extends LinearOpMode {
                 elevatorMotor.setPower(ELEVATOR_MOTOR_POWER);
             } else if (gamepad2.dpad_down) {
                 elevatorMotor.setPower(-ELEVATOR_MOTOR_POWER);
+            } else {
+                // Stop on release
+                elevatorMotor.setPower(0.0);
             }
 
 
